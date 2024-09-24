@@ -1,0 +1,37 @@
+name: Click Love
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set the timezene
+        run: echo "TZ='Asia/Shanghai'" >> $GITHUB_ENV
+      - name: Show the current time
+        run: date
+      - name: Checking out repo
+        uses: actions/checkout@v3
+      - name: Setting up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Installing package list
+        run: apt list --installed    
+      - name: Removing previous chrome instances on runner 
+        run: sudo apt purge google-chrome-stable  
+        
+      - name: Installing all necessary packages
+        run: pip install chromedriver-autoinstaller selenium requests
+      - name: Install xvfb
+        run: sudo apt-get install xvfb
+
+      - name: Running the Python script
+        run: python click_love.py
+        
